@@ -11,6 +11,7 @@
   "description": "",
   "dependencies": {
     "express-validator": "^7.2.1",
+    "mongoose": "^8.15.0",
     "swagger-ui-express": "^5.0.1",
     "yamljs": "^0.3.0"
   }
