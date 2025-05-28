@@ -1,12 +1,4 @@
-openapi: 3.0.0
-info:
-  title: Tasks API
-  description: API for managing tasks and projects
-  version: 1.0.0
-
-servers:
-  - url: http://localhost:3000/api
-
+...
 paths:
   /tasks:
     get:
@@ -14,6 +6,10 @@ paths:
       responses:
         '200':
           description: List of tasks
+        '401':
+          description: Unauthorized
+        '500':
+          description: Server error
     post:
       summary: Create a new task
       requestBody:
@@ -25,6 +21,10 @@ paths:
       responses:
         '201':
           description: Task created
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
 
   /tasks/{id}:
     get:
@@ -40,38 +40,14 @@ paths:
           description: Task found
         '404':
           description: Task not found
+        '401':
+          description: Unauthorized
     put:
       summary: Update task by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Task'
-      responses:
-        '200':
-          description: Task updated
-        '404':
-          description: Task not found
+      ...
     delete:
       summary: Delete task by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Task deleted
-        '404':
-          description: Task not found
+      ...
 
   /projects:
     get:
@@ -90,90 +66,16 @@ paths:
       responses:
         '201':
           description: Project created
+        '400':
+          description: Invalid input
 
   /projects/{id}:
     get:
       summary: Get project by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Project found
-        '404':
-          description: Project not found
+      ...
     put:
       summary: Update project by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Project'
-      responses:
-        '200':
-          description: Project updated
-        '404':
-          description: Project not found
+      ...
     delete:
       summary: Delete project by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Project deleted
-        '404':
-          description: Project not found
-
-components:
-  schemas:
-    Task:
-      type: object
-      required:
-        - title
-      properties:
-        title:
-          type: string
-        description:
-          type: string
-        dueDate:
-          type: string
-          format: date
-        completed:
-          type: boolean
-        priority:
-          type: string
-          enum: [low, medium, high]
-        tags:
-          type: array
-          items:
-            type: string
-        createdAt:
-          type: string
-          format: date-time
-
-    Project:
-      type: object
-      required:
-        - name
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        deadline:
-          type: string
-          format: date
+      ...
