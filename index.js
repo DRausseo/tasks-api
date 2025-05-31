@@ -71,7 +71,7 @@ app.use('/api/projects', ensureAuth, projectRoutes);
 // Middleware central de errores
 app.use(errorHandler);
 
-// Arranque del servidor
+// Escuchar en el puerto asignado por Render
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
 });
