@@ -4,7 +4,7 @@ require('dotenv').config();
 const cors = require('cors');
 const session = require('express-session');
 const passport = require('passport');
-require('./config/passport'); // configuración OAuth
+require('./config/passport');
 
 const taskRoutes = require('./routes/taskRoutes');
 const projectRoutes = require('./routes/projectRoutes');
@@ -34,10 +34,18 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Rutas públicas
+// Middleware para proteger rutas
+function ensureAuth(req, res, next) {
+  if (req.isAuthenticated()) return next();
+  res.status(401).json({ message: 'No autorizado' });
+}
+
+// ✅ Rutas públicas y docs primero
 app.get('/', (req, res) => {
   res.send('API de Tareas funcionando');
 });
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })
@@ -50,27 +58,18 @@ app.get('/auth/google/callback',
   })
 );
 
-// Middleware para proteger rutas
-function ensureAuth(req, res, next) {
-  if (req.isAuthenticated()) return next();
-  res.status(401).json({ message: 'No autorizado' });
-}
-
 app.get('/profile', ensureAuth, (req, res) => {
   res.json({ user: req.user });
 });
 
-// Swagger Docs
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-// Rutas protegidas
+// ✅ Rutas protegidas
 app.use('/api/tasks', ensureAuth, taskRoutes);
 app.use('/api/projects', ensureAuth, projectRoutes);
 
-// Middleware central de errores
+// Middleware de errores
 app.use(errorHandler);
 
-// Arranque del servidor
+// Inicia el servidor
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Servidor corriendo en http://0.0.0.0:${PORT}`);
 });
