@@ -34,7 +34,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// ✅ Rutas públicas (antes de auth middleware)
+// Rutas públicas
 app.get('/', (req, res) => {
   res.send('API de Tareas funcionando');
 });
@@ -50,7 +50,7 @@ app.get('/auth/google/callback',
   })
 );
 
-// ✅ Middleware de protección
+// Middleware para proteger rutas
 function ensureAuth(req, res, next) {
   if (req.isAuthenticated()) return next();
   res.status(401).json({ message: 'No autorizado' });
@@ -60,10 +60,10 @@ app.get('/profile', ensureAuth, (req, res) => {
   res.json({ user: req.user });
 });
 
-// ✅ Swagger docs (público)
+// Swagger Docs
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// ✅ Rutas protegidas (después de configurar sesión y passport)
+// Rutas protegidas
 app.use('/api/tasks', ensureAuth, taskRoutes);
 app.use('/api/projects', ensureAuth, projectRoutes);
 
@@ -71,6 +71,6 @@ app.use('/api/projects', ensureAuth, projectRoutes);
 app.use(errorHandler);
 
 // Arranque del servidor
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Servidor corriendo en http://0.0.0.0:${PORT}`);
 });
